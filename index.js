@@ -57,11 +57,6 @@ app.get('/order/:id', methodAndPath, checkOrderId, (request, response) => {
     return response.json(orders[index])
 })
 
-app.patch('/order/:id', methodAndPath, checkOrderId, (request, response) => {
-    const index = request.orderIndex
-    return response.json(orders[index])
-})
-
 app.listen(port, () => {
     console.log('Server rodando!')
 })
