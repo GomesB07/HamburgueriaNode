@@ -1,18 +1,15 @@
+const cors = require('cors')
 const express = require('express')
 const uuid = require('uuid')
 const app = express()
 app.use(express.json())
-const port = 3000
-
-
-const preparation = 'In preparation'
-const ready = 'Ready'
+app.use(cors())
+const port = 3001
 const orders = []
 
 
 const methodAndPath = (request, response, next) => {
     console.log(`${request.method} - ${request.url}`)
-
     next()
 }
 
@@ -28,24 +25,23 @@ const checkOrderId = (request, response, next) => {
     next()
 }
 
-
 app.get('/orders', methodAndPath, (request, response) => {
     return response.json(orders)
 })
 
 app.post('/order', methodAndPath, (request, response) => {
-    const {clientName, order, price} = request.body
-    const makeOrder = {id: uuid.v4(), clientName, order, price, status: preparation}
+    const {clientName, order, } = request.body
+    const makeOrder = {id: uuid.v4(), order, clientName}
     orders.push(makeOrder)
     return response.status(201).json(makeOrder)
 })
 
 app.put('/order/:id', methodAndPath, checkOrderId, (request, response) => {
     const id = request.orderId
-    const {clientName, order, price} = request.body
+    const {clientName, order} = request.body
     const index = request.orderIndex
-    const udpatedOrder = {id, clientName, order, price, status: preparation}
-    orders[index] = udpatedOrder
+    const updatedOrder = {id, clientName, order}
+    orders[index] = updatedOrder
 
     return response.status(200).json(udpatedOrder)
 })
@@ -63,10 +59,8 @@ app.get('/order/:id', methodAndPath, checkOrderId, (request, response) => {
 
 app.patch('/order/:id', methodAndPath, checkOrderId, (request, response) => {
     const index = request.orderIndex
-    orders[index].status = ready
     return response.json(orders[index])
 })
-
 
 app.listen(port, () => {
     console.log('Server rodando!')
